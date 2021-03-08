@@ -127,3 +127,8 @@ jobs:
       with:
         name: ddnet-${{ matrix.os }}
         path: release/artifacts
+        
+    - name: Upload Release Assets
+      uses: alexellis/upload-assets@0.3.0
+      with:
+        asset_paths: '["release/artifacts/*"]'
