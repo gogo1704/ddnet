@@ -2071,15 +2071,27 @@ int fs_storage_path(const char *appname, char *path, int max)
 #if !defined(CONF_PLATFORM_MACOS)
 	int i;
 #endif
-	if(!home)
-		return -1;
 
 #if defined(CONF_PLATFORM_MACOS)
+	if(!home)
+		return -1;
 	snprintf(path, max, "%s/Library/Application Support/%s", home, appname);
 #else
+	char *xdgdatahome = getenv("XDG_DATA_HOME");
+	if (xdgdatahome) {
+		snprintf(path, max, "%s/%s", xdgdatahome, appname);
+		for(i = strlen(xdgdatahome) + 1; path[i]; i++)
+			path[i] = tolower((unsigned char)path[i]);
+		if (fs_is_dir(path)) {
+			return 0; //try using the XDG Base Directory specification
+		}
+	}
+
+	if (!home) return -1;
 	snprintf(path, max, "%s/.%s", home, appname);
 	for(i = strlen(home) + 2; path[i]; i++)
 		path[i] = tolower((unsigned char)path[i]);
+
 #endif
 
 	return 0;
