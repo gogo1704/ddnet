@@ -864,11 +864,6 @@ NETSOCKET net_udp_create(NETADDR bindaddr);
 */
 int net_udp_send(NETSOCKET sock, const NETADDR *addr, const void *data, int size);
 
-struct mmsghdr_ {
-	struct msghdr msg_hdr;  /* Message header */
-	unsigned int  msg_len;  /* Number of received bytes for header */
-};
-
 #define VLEN 128
 #define PACKETSIZE 1400
 typedef struct
@@ -876,7 +871,7 @@ typedef struct
 #ifdef CONF_PLATFORM_LINUX
 	int pos;
 	int size;
-	struct mmsghdr_ msgs[VLEN];
+	struct mmsghdr msgs[VLEN];
 	struct iovec iovecs[VLEN];
 	char bufs[VLEN][PACKETSIZE];
 	char sockaddrs[VLEN][128];
