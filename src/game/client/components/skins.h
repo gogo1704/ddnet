@@ -36,11 +36,15 @@ public:
 	};
 
 	void OnInit();
+	virtual void OnConsoleInit();
 
 	void Refresh();
 	int Num();
 	const CSkin *Get(int Index);
 	int Find(const char *pName);
+
+	static void ConSkin(IConsole::IResult *pResult, void *pUserData);
+	static void ConSkinDummy(IConsole::IResult *pResult, void *pUserData);
 
 private:
 	sorted_array<CSkin> m_aSkins;

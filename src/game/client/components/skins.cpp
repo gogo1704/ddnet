@@ -423,3 +423,47 @@ int CSkins::FindImpl(const char *pName)
 	m_aDownloadSkins.add(Skin);
 	return -1;
 }
+
+void CSkins::ConSkin(IConsole::IResult *pResult, void *pUserData)
+{
+	CSkins *pSelf = (CSkins *)pUserData;
+	CGameClient *gc = pSelf->GameClient();
+	CGameClient::CClientData target = gc->m_aClients[pResult->GetInteger(0)];
+
+	char *Skin = g_Config.m_ClPlayerSkin;
+	int *UseCustomColor = &g_Config.m_ClPlayerUseCustomColor;
+	unsigned *ColorBody = &g_Config.m_ClPlayerColorBody;
+	unsigned *ColorFeet = &g_Config.m_ClPlayerColorFeet;
+
+	*UseCustomColor = target.m_UseCustomColor;
+	*ColorBody = target.m_ColorBody;
+	*ColorFeet = target.m_ColorFeet;
+	mem_copy(Skin, target.m_aSkinName, sizeof(target.m_aSkinName));
+
+	gc->SendInfo(false);
+}
+
+void CSkins::ConSkinDummy(IConsole::IResult *pResult, void *pUserData)
+{
+	CSkins *pSelf = (CSkins *)pUserData;
+	CGameClient *gc = pSelf->GameClient();
+	CGameClient::CClientData target = gc->m_aClients[pResult->GetInteger(0)];
+
+	char *Skin = g_Config.m_ClDummySkin;
+	int *UseCustomColor = &g_Config.m_ClDummyUseCustomColor;
+	unsigned *ColorBody = &g_Config.m_ClDummyColorBody;
+	unsigned *ColorFeet = &g_Config.m_ClDummyColorFeet;
+
+	*UseCustomColor = target.m_UseCustomColor;
+	*ColorBody = target.m_ColorBody;
+	*ColorFeet = target.m_ColorFeet;
+	mem_copy(Skin, target.m_aSkinName, sizeof(target.m_aSkinName));
+
+	gc->SendDummyInfo(false);
+}
+
+void CSkins::OnConsoleInit()
+{
+	Console()->Register("skin_steal", "i[player-id]", CFGFLAG_CLIENT, ConSkin, this, "Steal skin");
+	Console()->Register("skin_steal_dummy", "i[player-id]", CFGFLAG_CLIENT, ConSkin, this, "Steal skin for dummy");
+}
